@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PETZEN - Smart Inventory System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #334155;
+            background: linear-gradient(180deg, #f0f9ff 0%, #ffffff 50%, #f0fdf4 100%);
+            min-height: 100vh;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+        }
+
+        .header-brand {
+            flex: 1;
+        }
+
+        .header-brand h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #0ea5e9;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-brand p {
+            font-size: 0.875rem;
+            color: #78716c;
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+            font-weight: 500;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #334155;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #0ea5e9;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+        }
+
+        .hero {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            align-items: center;
+            padding: 5rem 1.5rem;
+        }
+
+        .hero-content h2 {
+            font-size: 3.75rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-content p {
+            font-size: 1.125rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+            color: white;
+            box-shadow: 0 20px 25px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 35px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #334155;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            border-color: #0ea5e9;
+            color: #0ea5e9;
+        }
+
+        .hero-image {
+            border-radius: 2.5rem;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            height: 500px;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 3rem 1.5rem;
+            }
+
+            .hero-content h2 {
+                font-size: 2.25rem;
+            }
+        }
+
+        .dashboard {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 2rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-card p {
+            color: #78716c;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-card h3 {
+            font-size: 2.25rem;
+            font-weight: 900;
+            color: #0ea5e9;
+        }
+
+        .status-red { color: #ef4444 !important; }
+        .status-yellow { color: #eab308 !important; }
+        .status-orange { color: #f97316 !important; }
+        .status-green { color: #10b981 !important; }
+
+        .catalog {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        .catalog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .cart-badge {
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 1.875rem;
+            overflow: hidden;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.25rem;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-name {
+            font-weight: 700;
+            font-size: 1.125rem;
+            line-height: 1.3;
+        }
+
+        .product-id {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .product-category {
+            color: #78716c;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #0ea5e9;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .status-disponible {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-bajo {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-reabastecer {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .status-agotado {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .add-cart-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-cart-btn:hover {
+            box-shadow: 0 10px 15px rgba(14, 165, 233, 0.3);
+            transform: scale(1.02);
+        }
+
+        .cart-section {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .cart-container, .form-container {
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+        }
+
+        .cart-container h2, .form-container h2 {
+            font-size: 1.875rem;
+            font-weight: 900;
+            margin-bottom: 1.25rem;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.75rem;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.25rem;
+            font-weight: 900;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 1.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        input, select {
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 1rem;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        .submit-btn {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .cart-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ecosystem {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 5rem 1.5rem;
+        }
+
+        .ecosystem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .ecosystem-card {
+            background: white;
+            border-radius: 1.875rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+        }
+
+        .ecosystem-icon {
+            font-size: 3.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .ecosystem-card h3 {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ecosystem-card p {
+            font-size: 0.875rem;
+            color: #78716c;
+            margin-top: 0.5rem;
+        }
+
+        .excel-section {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .excel-container {
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+            border-radius: 2.5rem;
+            padding: 3rem;
+            color: white;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .excel-container h2 {
+            font-size: 3.125rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+        }
+
+        .excel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .excel-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .excel-features li {
+            font-size: 1.125rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .excel-automation {
+            background: white;
+            color: #334155;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .excel-automation h3 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .excel-automation p {
+            margin-bottom: 1rem;
+        }
+
+        .formula-box {
+            background: #f1f5f9;
+            border-radius: 1rem;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            color: #0f172a;
+        }
+
+        @media (max-width: 768px) {
+            .excel-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .excel-container h2 {
+                font-size: 2rem;
+            }
+        }
+
+        .qr-section {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            align-items: center;
+            padding: 4rem 1.5rem;
+        }
+
+        .qr-content h2 {
+            font-size: 2.25rem;
+            font-weight: 900;
+            margin-bottom: 1.25rem;
+        }
+
+        .qr-content p {
+            color: #64748b;
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .qr-image {
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .qr-image img {
+            border-radius: 1rem;
+            max-width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .qr-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        footer {
+            background: #1e293b;
+            color: white;
+            padding: 4rem 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .footer-section h3, footer h4 {
+            font-weight: 900;
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.875rem;
+        }
+
+        footer h4 {
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        footer p {
+            color: #cbd5e1;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="header-brand">
+                <h1>🐾 PETZEN</h1>
+                <p>Smart Inventory · Desarrollado por Inventario Ágil</p>
+            </div>
+            <nav>
+                <a href="#catalogo">Catálogo</a>
+                <a href="#dashboard">Dashboard</a>
+                <a href="#pedidos">Pedidos</a>
+                <a href="#ecosistema">Ecosistema</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Todo para tu mascota 🐶🐱</h2>
+            <p>Sistema empresarial inteligente para gestión de inventario, pedidos online, automatización y control ejecutivo en tiempo real.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Hacer pedido</button>
+                <button class="btn btn-secondary">Ver Dashboard</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?q=80&w=1200&auto=format&fit=crop" alt="Mascotas felices">
+        </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="dashboard">
+        <h2 class="section-title">Dashboard Ejecutivo</h2>
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <p>Productos</p>
+                <h3>20</h3>
+            </div>
+            <div class="dashboard-card">
+                <p>Agotados</p>
+                <h3 class="status-red">1</h3>
+            </div>
+            <div class="dashboard-card">
+                <p>Stock bajo</p>
+                <h3 class="status-yellow">5</h3>
+            </div>
+            <div class="dashboard-card">
+                <p>Reabastecer</p>
+                <h3 class="status-orange">4</h3>
+            </div>
+            <div class="dashboard-card">
+                <p>Ventas estimadas</p>
+                <h3 class="status-green">$45,200</h3>
+            </div>
+            <div class="dashboard-card">
+                <p>Valor inventario</p>
+                <h3 style="color: #0ea5e9;">$22,090</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATALOG -->
+    <section id="catalogo" class="catalog">
+        <div class="catalog-header">
+            <h2 class="section-title">Catálogo Profesional</h2>
+            <div class="cart-badge">🛒 Carrito inteligente activo</div>
+        </div>
+        <div class="products-grid">
+            <!-- Producto 1 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?q=80&w=400&auto=format&fit=crop" alt="Croquetas Premium Perro" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Croquetas Premium Perro</h3>
+                        <span class="product-id">PTZ-001</span>
+                    </div>
+                    <p class="product-category">Alimento</p>
+                    <div class="product-footer">
+                        <p class="product-price">$450</p>
+                        <span class="status-badge status-disponible">Disponible</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 2 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1511044568932-338cba0ad803?q=80&w=400&auto=format&fit=crop" alt="Croquetas Premium Gato" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Croquetas Premium Gato</h3>
+                        <span class="product-id">PTZ-002</span>
+                    </div>
+                    <p class="product-category">Alimento</p>
+                    <div class="product-footer">
+                        <p class="product-price">$420</p>
+                        <span class="status-badge status-disponible">Disponible</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 3 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1545249390-6bdfa286032f?q=80&w=400&auto=format&fit=crop" alt="Arena para Gato" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Arena para Gato</h3>
+                        <span class="product-id">PTZ-003</span>
+                    </div>
+                    <p class="product-category">Higiene</p>
+                    <div class="product-footer">
+                        <p class="product-price">$250</p>
+                        <span class="status-badge status-bajo">Stock bajo</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 4 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400&auto=format&fit=crop" alt="Shampoo Antipulgas" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Shampoo Antipulgas</h3>
+                        <span class="product-id">PTZ-004</span>
+                    </div>
+                    <p class="product-category">Higiene</p>
+                    <div class="product-footer">
+                        <p class="product-price">$180</p>
+                        <span class="status-badge status-disponible">Disponible</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 5 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=400&auto=format&fit=crop" alt="Correa para Perro" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Correa para Perro</h3>
+                        <span class="product-id">PTZ-005</span>
+                    </div>
+                    <p class="product-category">Accesorios</p>
+                    <div class="product-footer">
+                        <p class="product-price">$120</p>
+                        <span class="status-badge status-reabastecer">Reabastecer</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 6 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?q=80&w=400&auto=format&fit=crop" alt="Collar Antipulgas" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Collar Antipulgas</h3>
+                        <span class="product-id">PTZ-006</span>
+                    </div>
+                    <p class="product-category">Salud</p>
+                    <div class="product-footer">
+                        <p class="product-price">$200</p>
+                        <span class="status-badge status-reabastecer">Reabastecer</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 7 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1583512603806-077998240c7a?q=80&w=400&auto=format&fit=crop" alt="Premios para Perro" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Premios para Perro</h3>
+                        <span class="product-id">PTZ-007</span>
+                    </div>
+                    <p class="product-category">Snacks</p>
+                    <div class="product-footer">
+                        <p class="product-price">$90</p>
+                        <span class="status-badge status-disponible">Disponible</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 8 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1519052537078-e6302a4968d4?q=80&w=400&auto=format&fit=crop" alt="Snacks para Gato" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Snacks para Gato</h3>
+                        <span class="product-id">PTZ-008</span>
+                    </div>
+                    <p class="product-category">Snacks</p>
+                    <div class="product-footer">
+                        <p class="product-price">$95</p>
+                        <span class="status-badge status-disponible">Disponible</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 9 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=400&auto=format&fit=crop" alt="Juguete Mordedera" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Juguete Mordedera</h3>
+                        <span class="product-id">PTZ-009</span>
+                    </div>
+                    <p class="product-category">Juguetes</p>
+                    <div class="product-footer">
+                        <p class="product-price">$150</p>
+                        <span class="status-badge status-bajo">Stock bajo</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 10 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?q=80&w=400&auto=format&fit=crop" alt="Pelota para Mascota" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Pelota para Mascota</h3>
+                        <span class="product-id">PTZ-010</span>
+                    </div>
+                    <p class="product-category">Juguetes</p>
+                    <div class="product-footer">
+                        <p class="product-price">$80</p>
+                        <span class="status-badge status-disponible">Disponible</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 11 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1548681528-6a5c45b66b42?q=80&w=400&auto=format&fit=crop" alt="Cama Pequeña" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Cama Pequeña</h3>
+                        <span class="product-id">PTZ-011</span>
+                    </div>
+                    <p class="product-category">Descanso</p>
+                    <div class="product-footer">
+                        <p class="product-price">$350</p>
+                        <span class="status-badge status-bajo">Stock bajo</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 12 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?q=80&w=400&auto=format&fit=crop" alt="Cama Grande" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Cama Grande</h3>
+                        <span class="product-id">PTZ-012</span>
+                    </div>
+                    <p class="product-category">Descanso</p>
+                    <div class="product-footer">
+                        <p class="product-price">$550</p>
+                        <span class="status-badge status-bajo">Stock bajo</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 13 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1583511655826-05700d52f4d9?q=80&w=400&auto=format&fit=crop" alt="Plato de Comida" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Plato de Comida</h3>
+                        <span class="product-id">PTZ-013</span>
+                    </div>
+                    <p class="product-category">Accesorios</p>
+                    <div class="product-footer">
+                        <p class="product-price">$100</p>
+                        <span class="status-badge status-disponible">Disponible</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 14 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1560743641-3914f2c45636?q=80&w=400&auto=format&fit=crop" alt="Bebedero Automático" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Bebedero Automático</h3>
+                        <span class="product-id">PTZ-014</span>
+                    </div>
+                    <p class="product-category">Accesorios</p>
+                    <div class="product-footer">
+                        <p class="product-price">$650</p>
+                        <span class="status-badge status-reabastecer">Reabastecer</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 15 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=400&auto=format&fit=crop" alt="Transportadora" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Transportadora</h3>
+                        <span class="product-id">PTZ-015</span>
+                    </div>
+                    <p class="product-category">Viaje</p>
+                    <div class="product-footer">
+                        <p class="product-price">$700</p>
+                        <span class="status-badge status-reabastecer">Reabastecer</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 16 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80&w=400&auto=format&fit=crop" alt="Cepillo para Pelo" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Cepillo para Pelo</h3>
+                        <span class="product-id">PTZ-016</span>
+                    </div>
+                    <p class="product-category">Higiene</p>
+                    <div class="product-footer">
+                        <p class="product-price">$130</p>
+                        <span class="status-badge status-disponible">Disponible</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 17 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=400&auto=format&fit=crop" alt="Ropa para Mascota" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Ropa para Mascota</h3>
+                        <span class="product-id">PTZ-017</span>
+                    </div>
+                    <p class="product-category">Moda</p>
+                    <div class="product-footer">
+                        <p class="product-price">$300</p>
+                        <span class="status-badge status-disponible">Disponible</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 18 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=400&auto=format&fit=crop" alt="Vitaminas para Mascotas" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Vitaminas para Mascotas</h3>
+                        <span class="product-id">PTZ-018</span>
+                    </div>
+                    <p class="product-category">Salud</p>
+                    <div class="product-footer">
+                        <p class="product-price">$280</p>
+                        <span class="status-badge status-agotado">Agotado</span>
+                    </div>
+                    <button class="add-cart-btn" disabled style="opacity: 0.5; cursor: not-allowed;">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 19 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?q=80&w=400&auto=format&fit=crop" alt="Casa para Perro" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Casa para Perro</h3>
+                        <span class="product-id">PTZ-019</span>
+                    </div>
+                    <p class="product-category">Hogar</p>
+                    <div class="product-footer">
+                        <p class="product-price">$1,200</p>
+                        <span class="status-badge status-reabastecer">Reabastecer</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+
+            <!-- Producto 20 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1511044568932-338cba0ad803?q=80&w=400&auto=format&fit=crop" alt="Rascador para Gato" class="product-image">
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3 class="product-name">Rascador para Gato</h3>
+                        <span class="product-id">PTZ-020</span>
+                    </div>
+                    <p class="product-category">Juguetes</p>
+                    <div class="product-footer">
+                        <p class="product-price">$500</p>
+                        <span class="status-badge status-disponible">Disponible</span>
+                    </div>
+                    <button class="add-cart-btn">Agregar al carrito</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CART & FORM SECTION -->
+    <section class="cart-section">
+        <div class="cart-container">
+            <h2>🛒 Carrito Funcional</h2>
+            <div class="cart-items">
+                <div class="cart-item">
+                    <span>Croquetas Premium Perro x2</span>
+                    <span>$900</span>
+                </div>
+                <div class="cart-item">
+                    <span>Pelota para Mascota x1</span>
+                    <span>$80</span>
+                </div>
+                <div class="cart-item">
+                    <span>Ropa para Mascota x1</span>
+                    <span>$300</span>
+                </div>
+            </div>
+            <div class="cart-total">
+                <span>Total</span>
+                <span>$1,280</span>
+            </div>
+            <button class="checkout-btn">Proceder al pedido</button>
+        </div>
+
+        <div class="form-container" id="pedidos">
+            <h2>📋 Formulario Cliente</h2>
+            <form class="form-group">
+                <input type="text" placeholder="Nombre completo" required>
+                <input type="tel" placeholder="Teléfono" required>
+                <input type="email" placeholder="Correo electrónico" required>
+                <select required>
+                    <option value="">Selecciona tipo de entrega</option>
+                    <option value="domicilio">Entrega a domicilio</option>
+                    <option value="tienda">Recoger en tienda</option>
+                </select>
+                <select required>
+                    <option value="">Selecciona método de pago</option>
+                    <option value="tarjeta">Tarjeta</option>
+                    <option value="transferencia">Transferencia</option>
+                    <option value="efectivo">Efectivo</option>
+                </select>
+                <button type="submit" class="submit-btn">Enviar pedido inteligente</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ECOSYSTEM SECTION -->
+    <section id="ecosistema" class="ecosystem">
+        <h2 class="section-title">Ecosistema Digital Empresarial</h2>
+        <div class="ecosystem-grid">
+            <div class="ecosystem-card">
+                <div class="ecosystem-icon">🌐</div>
+                <h3>Página Web</h3>
+                <p>Pedidos online y catálogo interactivo.</p>
+            </div>
+            <div class="ecosystem-card">
+                <div class="ecosystem-icon">📦</div>
+                <h3>Pedidos</h3>
+                <p>Captura automática de compras.</p>
+            </div>
+            <div class="ecosystem-card">
+                <div class="ecosystem-icon">📊</div>
+                <h3>Excel Dashboard</h3>
+                <p>KPIs, gráficas y alertas inteligentes.</p>
+            </div>
+            <div class="ecosystem-card">
+                <div class="ecosystem-icon">☁️</div>
+                <h3>Google Drive</h3>
+                <p>Inventarios colaborativos y reportes.</p>
+            </div>
+            <div class="ecosystem-card">
+                <div class="ecosystem-icon">📅</div>
+                <h3>Calendar + Meet</h3>
+                <p>Recordatorios, reuniones y entregas.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXCEL SECTION -->
+    <section class="excel-section">
+        <div class="excel-container">
+            <h2>Sistema Excel Profesional</h2>
+            <div class="excel-grid">
+                <div class="excel-features">
+                    <ul>
+                        <li>✔ Portada corporativa profesional</li>
+                        <li>✔ Inventario inteligente automatizado</li>
+                        <li>✔ Dashboard ejecutivo con KPIs</li>
+                        <li>✔ Semáforo automático de stock</li>
+                        <li>✔ Alertas automáticas</li>
+                        <li>✔ Gráficas dinámicas</li>
+                        <li>✔ Base de clientes y proveedores</li>
+                        <li>✔ Automatización de pedidos</li>
+                    </ul>
+                </div>
+                <div class="excel-automation">
+                    <h3>Automatización</h3>
+                    <p>Pedido web → Excel → Actualización automática de stock → Dashboard → Alertas → Reportes compartidos.</p>
+                    <div class="formula-box">=SI(E2=0,"🔴 Agotado",SI(E2<=5,"🟠 Reabastecer",SI(E2<=10,"🟡 Stock bajo","🟢 Disponible")))</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QR SECTION -->
+    <section class="qr-section">
+        <div class="qr-content">
+            <h2>Código QR del Sistema</h2>
+            <p>Escanea para acceder al sistema Petzen Smart Inventory desde cualquier dispositivo.</p>
+        </div>
+        <div class="qr-image">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=PetzenSmartInventory" alt="QR Code">
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contacto">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>🐾 Petzen</h3>
+                <p>Ecosistema digital inteligente para petshop físico y online.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p>📞 +52 55 1234 5678</p>
+                <p>✉ contacto@petzen.com</p>
+                <p>📍 Ciudad de México</p>
+            </div>
+            <div class="footer-section">
+                <h4>Redes Sociales</h4>
+                <p>Instagram: @petzenmx</p>
+                <p>Facebook: Petzen MX</p>
+                <p>WhatsApp Business</p>
+            </div>
+            <div class="footer-section">
+                <h4>Desarrollado por</h4>
+                <p>Inventario Ágil</p>
+                <p>Jasso · Perla · Martha · Joan</p>
+                <p>Proyecto universitario empresarial</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Funcionalidad del carrito
+        document.querySelectorAll('.add-cart-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.disabled) {
+                    this.textContent = '✓ Agregado';
+                    this.style.background = '#10b981';
+                    setTimeout(() => {
+                        this.textContent = 'Agregar al carrito';
+                        this.style.background = '';
+                    }, 2000);
+                }
+            });
+        });
+
+        // Formulario
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('¡Pedido enviado correctamente! Nos pondremos en contacto pronto.');
+            this.reset();
+        });
+
+        // Scroll suave
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
